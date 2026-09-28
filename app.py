@@ -214,3 +214,25 @@ def ver_hoteles(sistema):
             estado_hab = "activa" if h.activa else "inactiva"
             tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, h.tipo, estado_hab, f"${h.precio}", str(h.capacidad))
     console.print(tabla)
+
+
+def cambiar_estado_hotel(sistema):
+    numero = elegir("Hotel", [f"{h.nombre} ({'activo' if h.activo else 'inactivo'})" for h in sistema.hoteles])
+    if numero is None:
+        return
+    hotel = sistema.hoteles[numero]
+    hotel.activo = not hotel.activo  # R5: activar o desactivar el hotel
+    console.print(f"{hotel.nombre} ahora está {'activo' if hotel.activo else 'inactivo'}")
+
+
+def cambiar_estado_habitacion(sistema):
+    numero = elegir("Hotel", [h.nombre for h in sistema.hoteles])
+    if numero is None:
+        return
+    hotel = sistema.hoteles[numero]
+    numero = elegir("Habitación", [f"{h.tipo} ({'activa' if h.activa else 'inactiva'})" for h in hotel.habitaciones])
+    if numero is None:
+        return
+    habitacion = hotel.habitaciones[numero]
+    habitacion.activa = not habitacion.activa  # R7: activar o desactivar la habitación
+    console.print(f"{habitacion.tipo} ahora está {'activa' if habitacion.activa else 'inactiva'}")
