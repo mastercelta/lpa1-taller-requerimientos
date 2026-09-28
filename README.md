@@ -43,8 +43,6 @@ Revisar la documentación en [`./docs`](./docs)
 
 ### Diseño
 
-TODO: Crear el diagrama de clases:
-
 ![Diagrama de Clases](./docs/diagramas.png)
 
 
