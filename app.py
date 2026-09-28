@@ -60,3 +60,25 @@ class Habitacion:
         if not self.calificaciones:
             return None
         return sum(c.puntuacion for c in self.calificaciones) / len(self.calificaciones)  # R19: promedio de la habitación
+
+
+class Hotel:
+    def __init__(self, nombre, direccion, telefono, correo, ubicacion, servicios):  # R1: datos del hotel, R2: servicios
+        self.nombre = nombre
+        self.direccion = direccion
+        self.telefono = telefono
+        self.correo = correo
+        self.ubicacion = ubicacion
+        self.servicios = servicios
+        self.activo = True  # R5: estado del hotel
+        self.habitaciones = []
+
+    def agregar_habitacion(self, habitacion):
+        habitacion.hotel = self
+        self.habitaciones.append(habitacion)
+
+    def calificacion_promedio(self):
+        puntuaciones = [c.puntuacion for h in self.habitaciones for c in h.calificaciones]
+        if not puntuaciones:
+            return None
+        return sum(puntuaciones) / len(puntuaciones)  # R19: calificación general del hotel
