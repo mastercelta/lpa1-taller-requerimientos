@@ -254,3 +254,27 @@ def buscar(sistema):
         console.print("[yellow]No se encontraron habitaciones[/yellow]")
         return
     mostrar_habitaciones(resultados)
+
+
+def reservar(sistema):
+    numero = elegir("Cliente", [c.nombre for c in sistema.clientes])
+    if numero is None:
+        return
+    cliente = sistema.clientes[numero]
+    entrada = pedir_fecha("Fecha de entrada")
+    salida = pedir_fecha("Fecha de salida")
+    if salida <= entrada:
+        console.print("[red]La salida debe ser posterior a la entrada[/red]")
+        return
+    personas = IntPrompt.ask("Cantidad de personas")
+    disponibles = [h for h in sistema.buscar_habitaciones(entrada, salida) if h.capacidad >= personas]  # R9 (parcial): solo valida la capacidad, la entrevista no define cómo cambia el precio
+    numero = elegir("Habitación", [f"{h.hotel.nombre} - {h.tipo} (${h.precio} por noche, capacidad {h.capacidad})" for h in disponibles])
+    if numero is None:
+        return
+    habitacion = disponibles[numero]
+    console.print(f"Total a pagar: ${habitacion.calcular_total(entrada, salida)}")
+    if Confirm.ask("¿Confirmas el pago?"):  # R16: la reserva se formaliza al confirmar el pago
+        sistema.reservar(cliente, habitacion, entrada, salida, personas)
+        console.print("[green]Reserva confirmada[/green]")
+    else:
+        console.print("[yellow]Pago no confirmado, no se hizo la reserva[/yellow]")
