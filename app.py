@@ -165,3 +165,52 @@ def mostrar_habitaciones(habitaciones):
         console.print(f"Servicios incluidos: {h.servicios}")
         for c in h.calificaciones:
             console.print(f"  {c.cliente.nombre} ({c.puntuacion}/5): {c.comentario}")
+
+
+def registrar_hotel(sistema):
+    hotel = Hotel(
+        pedir("Nombre"),
+        pedir("Dirección"),
+        pedir("Teléfono"),
+        pedir("Correo electrónico"),
+        pedir("Ubicación (ciudad o zona)"),
+        pedir("Servicios (ej: restaurante, piscina, gimnasio)"),
+    )
+    sistema.hoteles.append(hotel)  # R1: registro del hotel
+    console.print("[green]Hotel registrado[/green]")
+
+
+def registrar_habitacion(sistema):
+    numero = elegir("Hotel", [h.nombre for h in sistema.hoteles])
+    if numero is None:
+        return
+    habitacion = Habitacion(
+        pedir("Tipo (ej: sencilla, doble, suite)"),
+        pedir("Descripción"),
+        IntPrompt.ask("Precio por noche"),
+        pedir("Servicios incluidos"),
+        IntPrompt.ask("Capacidad máxima (personas)"),
+    )
+    sistema.hoteles[numero].agregar_habitacion(habitacion)  # R6: registro de la habitación
+    console.print("[green]Habitación registrada[/green]")
+
+
+def registrar_cliente(sistema):
+    cliente = Cliente(pedir("Nombre completo"), pedir("Teléfono"), pedir("Correo electrónico"), pedir("Dirección"))
+    sistema.clientes.append(cliente)  # R13: registro del cliente
+    console.print("[green]Cliente registrado[/green]")
+
+
+def ver_hoteles(sistema):
+    tabla = Table(title="Hoteles y habitaciones")
+    for columna in ["Hotel", "Ubicación", "Estado", "Calificación", "Habitación", "Estado hab.", "Precio", "Capacidad"]:
+        tabla.add_column(columna)
+    for hotel in sistema.hoteles:
+        estado = "activo" if hotel.activo else "inactivo"
+        calificacion = formato_calificacion(hotel.calificacion_promedio())
+        if not hotel.habitaciones:
+            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, "-", "-", "-", "-")
+        for h in hotel.habitaciones:
+            estado_hab = "activa" if h.activa else "inactiva"
+            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, h.tipo, estado_hab, f"${h.precio}", str(h.capacidad))
+    console.print(tabla)
