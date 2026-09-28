@@ -115,3 +115,53 @@ class SistemaReservas:
         habitacion.reservas.append(reserva)
         self.reservas.append(reserva)
         return reserva
+
+
+def pedir(mensaje):
+    valor = ""
+    while not valor.strip():
+        valor = Prompt.ask(mensaje)
+    return valor.strip()
+
+
+def pedir_fecha(mensaje, opcional=False):
+    while True:
+        sufijo = ", vacío para omitir" if opcional else ""
+        texto = Prompt.ask(f"{mensaje} (AAAA-MM-DD{sufijo})", default="", show_default=False).strip()
+        if not texto and opcional:
+            return None
+        try:
+            return date.fromisoformat(texto)
+        except ValueError:
+            console.print("[red]Fecha inválida, usa el formato AAAA-MM-DD[/red]")
+
+
+def elegir(titulo, opciones):
+    if not opciones:
+        console.print("[red]No hay opciones disponibles[/red]")
+        return None
+    for numero, opcion in enumerate(opciones, 1):
+        console.print(f"{numero}. {opcion}")
+    numero = IntPrompt.ask(titulo, choices=[str(n) for n in range(1, len(opciones) + 1)])
+    return numero - 1
+
+
+def formato_calificacion(promedio):
+    if promedio is None:
+        return "Sin calificar"
+    return f"{promedio:.1f}"
+
+
+def mostrar_habitaciones(habitaciones):
+    tabla = Table(title="Habitaciones")
+    for columna in ["Hotel", "Ubicación", "Tipo", "Precio por noche", "Capacidad", "Calificación"]:
+        tabla.add_column(columna)
+    for h in habitaciones:
+        tabla.add_row(h.hotel.nombre, h.hotel.ubicacion, h.tipo, f"${h.precio}", str(h.capacidad), formato_calificacion(h.calificacion_promedio()))
+    console.print(tabla)
+    for h in habitaciones:  # R15: detalle de la habitación con calificación y comentarios
+        console.print(f"\n[bold]{h.hotel.nombre} - {h.tipo}[/bold]")
+        console.print(f"Descripción: {h.descripcion}")
+        console.print(f"Servicios incluidos: {h.servicios}")
+        for c in h.calificaciones:
+            console.print(f"  {c.cliente.nombre} ({c.puntuacion}/5): {c.comentario}")
