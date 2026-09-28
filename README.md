@@ -63,7 +63,7 @@ El proyecto requiere Python 3 y usa la librería `rich` para mostrar la interfaz
 1. Clonar el proyecto
 
     ```bash
-    git clone https://github.com/clubdecomputacion/lpa1-taller-requerimientos.git
+    git clone https://github.com/mastercelta/lpa1-taller-requerimientos.git
     ```
 
 2. Crear y activar entorno virtual
