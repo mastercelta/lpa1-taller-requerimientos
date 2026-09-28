@@ -21,12 +21,11 @@ Revisar la documentación en [`./docs`](./docs)
 
 ### Requerimientos
 
-TODO: Corregir la lista de requerimientos:
-- **R1**: El sistema debe ...
-- **R2**: El sistema debe ...
-<br>...<br>
-- **Rn**: El sistema debe ...
-- **Rm**: El sistema debe ...
+- **R1**: El sistema debe registrar un hotel con su nombre, dirección, teléfono, correo electrónico y ubicación geográfica.
+- **R2**: El sistema debe permitir describir los servicios de un hotel (por ejemplo restaurante, piscina o gimnasio) y asociarle fotos.
+- **R3**: El sistema debe permitir registrar las ofertas y promociones por temporada de un hotel (como descuentos en temporada baja o paquetes especiales) y sus servicios adicionales (como estacionamiento o áreas de coworking).
+- **R4**: El sistema debe permitir registrar las condiciones de pago y la política de cancelación de cada hotel, que pueden variar según el tipo de habitación y la temporada.
+- **R5**: El sistema debe manejar el estado de actividad de un hotel (activo o inactivo, por ejemplo cerrado por reformas).
 
 ### Diseño
 
