@@ -29,6 +29,10 @@ Revisar la documentación en [`./docs`](./docs)
 - **R6**: El sistema debe registrar las habitaciones de un hotel con su tipo, descripción, precio, servicios incluidos, capacidad y fotos.
 - **R7**: El sistema debe manejar el estado de actividad de una habitación (activa o inactiva por mantenimiento, remodelación o desinfección).
 - **R8**: El sistema debe considerar para las reservas únicamente los hoteles y las habitaciones activos.
+- **R9**: El sistema debe calcular el precio de una habitación según la cantidad de personas que se alojan, sin exceder su capacidad máxima.
+- **R10**: El sistema debe calcular el precio de una habitación según la temporada.
+- **R11**: El sistema debe manejar un calendario de temporadas propio de cada hotel y un calendario regional de temporadas que la mayoría de los hoteles sigue.
+- **R12**: El sistema debe manejar un calendario por habitación que indique las fechas en que está reservada y las fechas en que está disponible.
 
 ### Diseño
 
