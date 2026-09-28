@@ -193,17 +193,21 @@ def formato_calificacion(promedio):
     return f"{promedio:.1f}"
 
 
-def mostrar_habitaciones(habitaciones):
+def mostrar_habitaciones(habitaciones, sistema, fecha=None, personas=1):
+    fecha = fecha or date.today()
     tabla = Table(title="Habitaciones")
     for columna in ["Hotel", "Ubicación", "Tipo", "Precio por noche", "Capacidad", "Calificación"]:
         tabla.add_column(columna)
     for h in habitaciones:
-        tabla.add_row(h.hotel.nombre, h.hotel.ubicacion, h.tipo, f"${h.precio}", str(h.capacidad), formato_calificacion(h.calificacion_promedio()))
+        precio = h.calcular_precio_por_noche(personas, fecha, sistema)
+        tabla.add_row(h.hotel.nombre, h.hotel.ubicacion, h.tipo, f"${precio}", str(h.capacidad), formato_calificacion(h.calificacion_promedio()))
     console.print(tabla)
     for h in habitaciones:  # R15: detalle de la habitación con calificación y comentarios
         console.print(f"\n[bold]{h.hotel.nombre} - {h.tipo}[/bold]")
         console.print(f"Descripción: {h.descripcion}")
         console.print(f"Servicios incluidos: {h.servicios}")
+        if h.fotos:
+            console.print(f"Fotos: {h.fotos}")  # R15: fotos de la habitación
         for c in h.calificaciones:
             console.print(f"  {c.cliente.nombre} ({c.puntuacion}/5): {c.comentario}")
 
@@ -262,6 +266,15 @@ def ver_hoteles(sistema):
             estado_hab = "activa" if h.activa else "inactiva"
             tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, h.tipo, estado_hab, f"${h.precio}", str(h.capacidad))
     console.print(tabla)
+    for hotel in sistema.hoteles:
+        if hotel.fotos or hotel.ofertas or hotel.servicios_adicionales:
+            console.print(f"\n[bold]{hotel.nombre}[/bold]")
+            if hotel.fotos:
+                console.print(f"Fotos: {hotel.fotos}")  # R2: fotos del hotel
+            if hotel.servicios_adicionales:
+                console.print(f"Servicios adicionales: {hotel.servicios_adicionales}")  # R3
+            for oferta in hotel.ofertas:
+                console.print(f"Oferta: {oferta}")  # R3: ofertas por temporada
 
 
 def cambiar_estado_hotel(sistema):
