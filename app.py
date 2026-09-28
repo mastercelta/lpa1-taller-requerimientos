@@ -37,7 +37,7 @@ class Reserva:
 
 
 class Habitacion:
-    def __init__(self, tipo, descripcion, precio, servicios, capacidad, fotos="", recargo_por_persona=0):  # R6: datos de la habitación, R2: fotos
+    def __init__(self, tipo, descripcion, precio, servicios, capacidad, fotos="", recargo_por_persona=0, categoria="silver"):  # R6: datos de la habitación, R2: fotos
         self.tipo = tipo
         self.descripcion = descripcion
         self.precio = precio
@@ -45,6 +45,7 @@ class Habitacion:
         self.capacidad = capacidad
         self.fotos = fotos
         self.recargo_por_persona = recargo_por_persona
+        self.categoria = categoria  # silver, gold o platinum
         self.activa = True  # R7: estado de la habitación
         self.hotel = None
         self.reservas = []
