@@ -72,15 +72,24 @@ class Habitacion:
 
 
 class Hotel:
-    def __init__(self, nombre, direccion, telefono, correo, ubicacion, servicios):  # R1: datos del hotel, R2: servicios
+    def __init__(self, nombre, direccion, telefono, correo, ubicacion, servicios, fotos="",
+                 servicios_adicionales="", condicion_pago="", dias_anticipacion=0, penalidad_cancelacion=0):
+        # R1: datos del hotel, R2: servicios y fotos, R3: servicios adicionales, R4: pago y cancelación
         self.nombre = nombre
         self.direccion = direccion
         self.telefono = telefono
         self.correo = correo
         self.ubicacion = ubicacion
         self.servicios = servicios
+        self.fotos = fotos
+        self.servicios_adicionales = servicios_adicionales
+        self.condicion_pago = condicion_pago
+        self.dias_anticipacion = dias_anticipacion
+        self.penalidad_cancelacion = penalidad_cancelacion
         self.activo = True  # R5: estado del hotel
         self.habitaciones = []
+        self.ofertas = []  # R3: ofertas por temporada
+        self.calendario_temporadas = []  # R11: calendario propio de temporadas
 
     def agregar_habitacion(self, habitacion):
         habitacion.hotel = self
@@ -91,6 +100,21 @@ class Hotel:
         if not puntuaciones:
             return None
         return sum(puntuaciones) / len(puntuaciones)  # R19: calificación general del hotel
+
+    def obtener_ajuste_temporada(self, fecha, sistema):
+        for temporada in self.calendario_temporadas:  # R11: el calendario propio manda sobre el regional
+            if temporada["inicio"] <= fecha <= temporada["fin"]:
+                return temporada["ajuste"]
+        for temporada in sistema.calendario_regional:  # R11: calendario regional de temporadas
+            if temporada["inicio"] <= fecha <= temporada["fin"]:
+                return temporada["ajuste"]
+        return 0
+
+    def calcular_reembolso(self, monto, fecha_entrada, fecha_cancelacion):
+        dias_restantes = (fecha_entrada - fecha_cancelacion).days
+        if dias_restantes >= self.dias_anticipacion:  # R17: reembolso según la política de cancelación
+            return monto
+        return round(monto * (1 - self.penalidad_cancelacion / 100))
 
 
 class SistemaReservas:
