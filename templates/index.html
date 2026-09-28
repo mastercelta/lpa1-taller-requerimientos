@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Hoteles y habitaciones</h1>
+{% for hotel in hoteles %}
+{% set indice_hotel = loop.index0 %}
+<h2>{{ hotel.nombre }} — {{ hotel.ubicacion }} ({{ "activo" if hotel.activo else "inactivo" }})</h2>
+<p>
+    Calificación: {{ "%.1f"|format(hotel.calificacion_promedio()) if hotel.calificacion_promedio() is not none else "Sin calificar" }} |
+    Dirección: {{ hotel.direccion }} | Teléfono: {{ hotel.telefono }}
+    {% if hotel.servicios_adicionales %} | Servicios adicionales: {{ hotel.servicios_adicionales }}{% endif %}
+</p>
+<form class="inline-form" method="post" action="{{ url_for('cambiar_estado_hotel', indice=indice_hotel) }}">
+    <button type="submit">{{ "Desactivar hotel" if hotel.activo else "Activar hotel" }}</button>
+</form>
+<table>
+    <tr><th>Tipo</th><th>Categoría</th><th>Precio/noche</th><th>Capacidad</th><th>Estado</th><th>Calificación</th><th></th></tr>
+    {% for h in hotel.habitaciones %}
+    <tr>
+        <td>{{ h.tipo }}</td>
+        <td>{{ h.categoria }}</td>
+        <td>${{ h.precio }}</td>
+        <td>{{ h.capacidad }}</td>
+        <td>{{ "activa" if h.activa else "inactiva" }}</td>
+        <td>{{ "%.1f"|format(h.calificacion_promedio()) if h.calificacion_promedio() is not none else "Sin calificar" }}</td>
+        <td>
+            <form class="inline-form" method="post" action="{{ url_for('cambiar_estado_habitacion', indice_hotel=indice_hotel, indice_hab=loop.index0) }}">
+                <button type="submit">{{ "Desactivar" if h.activa else "Activar" }}</button>
+            </form>
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7">Sin habitaciones registradas</td></tr>
+    {% endfor %}
+</table>
+{% endfor %}
+{% endblock %}
