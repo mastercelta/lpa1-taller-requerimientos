@@ -236,3 +236,21 @@ def cambiar_estado_habitacion(sistema):
     habitacion = hotel.habitaciones[numero]
     habitacion.activa = not habitacion.activa  # R7: activar o desactivar la habitación
     console.print(f"{habitacion.tipo} ahora está {'activa' if habitacion.activa else 'inactiva'}")
+
+
+def buscar(sistema):
+    entrada = pedir_fecha("Fecha de entrada", opcional=True)
+    salida = None
+    if entrada:
+        salida = pedir_fecha("Fecha de salida")
+        if salida <= entrada:
+            console.print("[red]La salida debe ser posterior a la entrada[/red]")
+            return
+    ubicacion = Prompt.ask("Ubicación (vacío para omitir)", default="", show_default=False)
+    calificacion = IntPrompt.ask("Calificación mínima de 1 a 5 (0 para omitir)", default=0)
+    precio = IntPrompt.ask("Precio máximo por noche (0 para omitir)", default=0)
+    resultados = sistema.buscar_habitaciones(entrada, salida, ubicacion, calificacion, precio)
+    if not resultados:
+        console.print("[yellow]No se encontraron habitaciones[/yellow]")
+        return
+    mostrar_habitaciones(resultados)
