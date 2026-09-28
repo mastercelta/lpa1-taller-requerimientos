@@ -11,9 +11,9 @@
 
 ## Descripción del Proyecto
 
-TODO: Corregir la descripción - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ut quam dolor. Quisque elementum est sed massa gravida convallis. Donec volutpat turpis eget lectus feugiat congue. Morbi rutrum auctor eleifend. Etiam iaculis libero tellus, vel aliquet erat tempor sed. Duis efficitur quam vel sapien luctus, sed semper lacus mollis. Suspendisse non nunc eleifend, aliquet elit eget, condimentum augue.
+Sistema de consola, desarrollado en Python con la librería `rich`, para gestionar las reservas de hoteles. Permite registrar hoteles y sus habitaciones, registrar clientes, buscar habitaciones, reservarlas mediante un pago y calificarlas después de la estancia.
 
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus vel nibh fringilla, porta elit vel, consequat libero. Nulla et libero ac nulla ultricies sollicitudin. Sed viverra non nulla id convallis. Morbi vel varius lacus, in maximus nunc. Praesent sed semper diam. Pellentesque vehicula nulla augue, ut porta dolor consequat at.
+Los requerimientos salen de la entrevista con la administradora del hotel, disponible en [`docs/entrevista.pdf`](./docs/entrevista.pdf).
 
 ## Documentación
 
