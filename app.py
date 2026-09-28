@@ -8,6 +8,8 @@ from rich.table import Table
 
 console = Console()
 
+CATEGORIAS = ["silver", "gold", "platinum"]
+
 
 class Calificacion:
     def __init__(self, cliente, puntuacion, comentario):
@@ -199,11 +201,11 @@ def formato_calificacion(promedio):
 def mostrar_habitaciones(habitaciones, sistema, fecha=None, personas=1):
     fecha = fecha or date.today()
     tabla = Table(title="Habitaciones")
-    for columna in ["Hotel", "Ubicación", "Tipo", "Precio por noche", "Capacidad", "Calificación"]:
+    for columna in ["Hotel", "Ubicación", "Tipo", "Categoría", "Precio por noche", "Capacidad", "Calificación"]:
         tabla.add_column(columna)
     for h in habitaciones:
         precio = h.calcular_precio_por_noche(personas, fecha, sistema)
-        tabla.add_row(h.hotel.nombre, h.hotel.ubicacion, h.tipo, f"${precio}", str(h.capacidad), formato_calificacion(h.calificacion_promedio()))
+        tabla.add_row(h.hotel.nombre, h.hotel.ubicacion, h.tipo, h.categoria, f"${precio}", str(h.capacidad), formato_calificacion(h.calificacion_promedio()))
     console.print(tabla)
     for h in habitaciones:  # R15: detalle de la habitación con calificación y comentarios
         console.print(f"\n[bold]{h.hotel.nombre} - {h.tipo}[/bold]")
@@ -237,6 +239,9 @@ def registrar_habitacion(sistema):
     numero = elegir("Hotel", [h.nombre for h in sistema.hoteles])
     if numero is None:
         return
+    indice_categoria = elegir("Categoría", CATEGORIAS)
+    if indice_categoria is None:
+        return
     habitacion = Habitacion(
         pedir("Tipo (ej: sencilla, doble, suite)"),
         pedir("Descripción"),
@@ -245,6 +250,7 @@ def registrar_habitacion(sistema):
         IntPrompt.ask("Capacidad máxima (personas)"),
         Prompt.ask("Fotos (nombres de archivo separados por coma, opcional)", default="", show_default=False),
         IntPrompt.ask("Recargo por persona adicional (0 si no aplica)", default=0),
+        CATEGORIAS[indice_categoria],
     )
     sistema.hoteles[numero].agregar_habitacion(habitacion)  # R6: registro de la habitación
     console.print("[green]Habitación registrada[/green]")
@@ -258,16 +264,16 @@ def registrar_cliente(sistema):
 
 def ver_hoteles(sistema):
     tabla = Table(title="Hoteles y habitaciones")
-    for columna in ["Hotel", "Ubicación", "Estado", "Calificación", "Habitación", "Estado hab.", "Precio", "Capacidad"]:
+    for columna in ["Hotel", "Ubicación", "Estado", "Calificación", "Habitación", "Categoría", "Estado hab.", "Precio", "Capacidad"]:
         tabla.add_column(columna)
     for hotel in sistema.hoteles:
         estado = "activo" if hotel.activo else "inactivo"
         calificacion = formato_calificacion(hotel.calificacion_promedio())
         if not hotel.habitaciones:
-            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, "-", "-", "-", "-")
+            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, "-", "-", "-", "-", "-")
         for h in hotel.habitaciones:
             estado_hab = "activa" if h.activa else "inactiva"
-            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, h.tipo, estado_hab, f"${h.precio}", str(h.capacidad))
+            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, h.tipo, h.categoria, estado_hab, f"${h.precio}", str(h.capacidad))
     console.print(tabla)
     for hotel in sistema.hoteles:
         if hotel.fotos or hotel.ofertas or hotel.servicios_adicionales:
