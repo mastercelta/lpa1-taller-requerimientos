@@ -8,6 +8,8 @@ from rich.table import Table
 
 console = Console()
 
+CATEGORIAS = ["silver", "gold", "platinum"]
+
 
 class Calificacion:
     def __init__(self, cliente, puntuacion, comentario):
@@ -37,7 +39,7 @@ class Reserva:
 
 
 class Habitacion:
-    def __init__(self, tipo, descripcion, precio, servicios, capacidad, fotos="", recargo_por_persona=0):  # R6: datos de la habitación, R2: fotos
+    def __init__(self, tipo, descripcion, precio, servicios, capacidad, fotos="", recargo_por_persona=0, categoria="silver"):  # R6: datos de la habitación, R2: fotos
         self.tipo = tipo
         self.descripcion = descripcion
         self.precio = precio
@@ -45,6 +47,7 @@ class Habitacion:
         self.capacidad = capacidad
         self.fotos = fotos
         self.recargo_por_persona = recargo_por_persona
+        self.categoria = categoria  # silver, gold o platinum
         self.activa = True  # R7: estado de la habitación
         self.hotel = None
         self.reservas = []
@@ -125,7 +128,7 @@ class SistemaReservas:
         self.reservas = []
         self.calendario_regional = []  # R11: calendario regional de temporadas
 
-    def buscar_habitaciones(self, fecha_entrada=None, fecha_salida=None, ubicacion="", calificacion_minima=0, precio_maximo=0):
+    def buscar_habitaciones(self, fecha_entrada=None, fecha_salida=None, ubicacion="", calificacion_minima=0, precio_maximo=0, categoria=""):
         resultados = []
         for hotel in self.hoteles:
             if not hotel.activo:  # R8: solo hoteles activos
@@ -141,6 +144,8 @@ class SistemaReservas:
                 if calificacion_minima and (promedio is None or promedio < calificacion_minima):  # R14: criterio de calificación
                     continue
                 if precio_maximo and habitacion.precio > precio_maximo:  # R14: criterio de precio
+                    continue
+                if categoria and habitacion.categoria != categoria:  # criterio de categoría (silver, gold, platinum)
                     continue
                 resultados.append(habitacion)
         return resultados
@@ -196,11 +201,11 @@ def formato_calificacion(promedio):
 def mostrar_habitaciones(habitaciones, sistema, fecha=None, personas=1):
     fecha = fecha or date.today()
     tabla = Table(title="Habitaciones")
-    for columna in ["Hotel", "Ubicación", "Tipo", "Precio por noche", "Capacidad", "Calificación"]:
+    for columna in ["Hotel", "Ubicación", "Tipo", "Categoría", "Precio por noche", "Capacidad", "Calificación"]:
         tabla.add_column(columna)
     for h in habitaciones:
         precio = h.calcular_precio_por_noche(personas, fecha, sistema)
-        tabla.add_row(h.hotel.nombre, h.hotel.ubicacion, h.tipo, f"${precio}", str(h.capacidad), formato_calificacion(h.calificacion_promedio()))
+        tabla.add_row(h.hotel.nombre, h.hotel.ubicacion, h.tipo, h.categoria, f"${precio}", str(h.capacidad), formato_calificacion(h.calificacion_promedio()))
     console.print(tabla)
     for h in habitaciones:  # R15: detalle de la habitación con calificación y comentarios
         console.print(f"\n[bold]{h.hotel.nombre} - {h.tipo}[/bold]")
@@ -234,6 +239,9 @@ def registrar_habitacion(sistema):
     numero = elegir("Hotel", [h.nombre for h in sistema.hoteles])
     if numero is None:
         return
+    indice_categoria = elegir("Categoría", CATEGORIAS)
+    if indice_categoria is None:
+        return
     habitacion = Habitacion(
         pedir("Tipo (ej: sencilla, doble, suite)"),
         pedir("Descripción"),
@@ -242,6 +250,7 @@ def registrar_habitacion(sistema):
         IntPrompt.ask("Capacidad máxima (personas)"),
         Prompt.ask("Fotos (nombres de archivo separados por coma, opcional)", default="", show_default=False),
         IntPrompt.ask("Recargo por persona adicional (0 si no aplica)", default=0),
+        CATEGORIAS[indice_categoria],
     )
     sistema.hoteles[numero].agregar_habitacion(habitacion)  # R6: registro de la habitación
     console.print("[green]Habitación registrada[/green]")
@@ -255,16 +264,16 @@ def registrar_cliente(sistema):
 
 def ver_hoteles(sistema):
     tabla = Table(title="Hoteles y habitaciones")
-    for columna in ["Hotel", "Ubicación", "Estado", "Calificación", "Habitación", "Estado hab.", "Precio", "Capacidad"]:
+    for columna in ["Hotel", "Ubicación", "Estado", "Calificación", "Habitación", "Categoría", "Estado hab.", "Precio", "Capacidad"]:
         tabla.add_column(columna)
     for hotel in sistema.hoteles:
         estado = "activo" if hotel.activo else "inactivo"
         calificacion = formato_calificacion(hotel.calificacion_promedio())
         if not hotel.habitaciones:
-            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, "-", "-", "-", "-")
+            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, "-", "-", "-", "-", "-")
         for h in hotel.habitaciones:
             estado_hab = "activa" if h.activa else "inactiva"
-            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, h.tipo, estado_hab, f"${h.precio}", str(h.capacidad))
+            tabla.add_row(hotel.nombre, hotel.ubicacion, estado, calificacion, h.tipo, h.categoria, estado_hab, f"${h.precio}", str(h.capacidad))
     console.print(tabla)
     for hotel in sistema.hoteles:
         if hotel.fotos or hotel.ofertas or hotel.servicios_adicionales:
@@ -330,6 +339,33 @@ def agregar_temporada_regional(sistema):
     console.print("[green]Temporada regional agregada[/green]")
 
 
+def ver_ofertas_y_temporadas(sistema):
+    if sistema.calendario_regional:
+        tabla = Table(title="Temporadas regionales")
+        for columna in ["Temporada", "Inicio", "Fin", "Ajuste"]:
+            tabla.add_column(columna)
+        for t in sistema.calendario_regional:
+            tabla.add_row(t["nombre"], str(t["inicio"]), str(t["fin"]), f"{t['ajuste']}%")
+        console.print(tabla)
+    else:
+        console.print("[yellow]No hay temporadas regionales registradas[/yellow]")
+
+    for hotel in sistema.hoteles:
+        if not hotel.ofertas and not hotel.calendario_temporadas:
+            continue
+        console.print(f"\n[bold]{hotel.nombre}[/bold]")
+        if hotel.ofertas:
+            for oferta in hotel.ofertas:
+                console.print(f"  Oferta: {oferta}")
+        if hotel.calendario_temporadas:
+            tabla = Table(title=f"Temporadas de {hotel.nombre}")
+            for columna in ["Temporada", "Inicio", "Fin", "Ajuste"]:
+                tabla.add_column(columna)
+            for t in hotel.calendario_temporadas:
+                tabla.add_row(t["nombre"], str(t["inicio"]), str(t["fin"]), f"{t['ajuste']}%")
+            console.print(tabla)
+
+
 def buscar(sistema):
     entrada = pedir_fecha("Fecha de entrada", opcional=True)
     salida = None
@@ -341,7 +377,8 @@ def buscar(sistema):
     ubicacion = Prompt.ask("Ubicación (vacío para omitir)", default="", show_default=False)
     calificacion = IntPrompt.ask("Calificación mínima de 1 a 5 (0 para omitir)", default=0)
     precio = IntPrompt.ask("Precio máximo por noche (0 para omitir)", default=0)
-    resultados = sistema.buscar_habitaciones(entrada, salida, ubicacion, calificacion, precio)
+    categoria = Prompt.ask("Categoría (silver, gold, platinum; vacío para omitir)", default="", show_default=False)
+    resultados = sistema.buscar_habitaciones(entrada, salida, ubicacion, calificacion, precio, categoria)
     if not resultados:
         console.print("[yellow]No se encontraron habitaciones[/yellow]")
         return
@@ -418,15 +455,15 @@ def cargar_datos_iniciales(sistema):
         "Hotel Sol Caribe", "Calle 1 # 2-3", "3001112222", "sol@hotel.com", "Cartagena", "restaurante, piscina",
         "fachada.jpg, piscina.jpg", "estacionamiento", "50% anticipado, 50% al llegar", 3, 30,
     )
-    sol.agregar_habitacion(Habitacion("Sencilla", "Cama sencilla con vista al mar", 120000, "wifi, desayuno", 1, "sencilla.jpg"))
-    sol.agregar_habitacion(Habitacion("Doble", "Dos camas dobles", 200000, "wifi, desayuno, aire acondicionado", 4, "doble.jpg", 30000))
+    sol.agregar_habitacion(Habitacion("Sencilla", "Cama sencilla con vista al mar", 120000, "wifi, desayuno", 1, "sencilla.jpg", 0, "silver"))
+    sol.agregar_habitacion(Habitacion("Doble", "Dos camas dobles", 200000, "wifi, desayuno, aire acondicionado", 4, "doble.jpg", 30000, "gold"))
     sol.ofertas.append("20% de descuento en temporada baja")
     sol.calendario_temporadas.append({"nombre": "temporada alta", "inicio": date(2026, 12, 15), "fin": date(2027, 1, 15), "ajuste": 25})
     andino = Hotel(
         "Hotel Andino", "Carrera 4 # 5-6", "3003334444", "andino@hotel.com", "Medellín", "gimnasio, coworking",
         "", "coworking", "pago al llegar", 1, 50,
     )
-    andino.agregar_habitacion(Habitacion("Suite", "Suite con sala privada", 350000, "wifi, minibar, jacuzzi", 3, "", 40000))
+    andino.agregar_habitacion(Habitacion("Suite", "Suite con sala privada", 350000, "wifi, minibar, jacuzzi", 3, "", 40000, "platinum"))
     sistema.hoteles.extend([sol, andino])
     sistema.calendario_regional.append({"nombre": "vacaciones de fin de año", "inicio": date(2026, 12, 20), "fin": date(2027, 1, 10), "ajuste": 15})
     ana = Cliente("Ana Pérez", "3005556666", "ana@correo.com", "Calle 7 # 8-9")
@@ -451,6 +488,7 @@ def main():
         "11": ("Agregar temporada a un hotel", agregar_temporada_hotel),
         "12": ("Agregar temporada regional", agregar_temporada_regional),
         "13": ("Cancelar una reserva", cancelar_reserva),
+        "14": ("Ver ofertas y temporadas", ver_ofertas_y_temporadas),
     }
     while True:
         console.print("\n[bold]Sistema de reservas[/bold]")

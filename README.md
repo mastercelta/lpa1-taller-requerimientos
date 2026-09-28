@@ -46,26 +46,17 @@ Revisar la documentación en [`./docs`](./docs)
 ![Diagrama de Clases](./docs/diagramas.png)
 
 
-### Tárifas
+### Categorías de habitación
 
-|destino|pasajes|silver|gold|platinum|
-|:---|---:|---:|---:|---:|
-|Aruba|418|134|167|191|
-|Bahamas|423|112|183|202|
-|Cancún|350|105|142|187|
-|Hawaii|858|210|247|291|
-|Jamaica|380|115|134|161|
-|Madrid|496|190|230|270|
-|Miami|334|122|151|183|
-|Moscu|634|131|153|167|
-|NewYork|495|104|112|210|
-|Panamá|315|119|138|175|
-|Paris|512|210|260|290|
-|Rome|478|184|220|250|
-|Seul|967|205|245|265|
-|Sidney|1045|170|199|230|
-|Taipei|912|220|245|298|
-|Tokio|989|189|231|255|
+Cada habitación se registra en una de estas tres categorías, que sirve para filtrar en la búsqueda:
+
+|categoría|descripción|
+|:---|:---|
+|silver|Habitación estándar, con los servicios básicos incluidos|
+|gold|Habitación superior, con más espacio o servicios adicionales (ej: aire acondicionado)|
+|platinum|Habitación de lujo (ej: suite), con los mejores servicios y ubicación del hotel|
+
+El precio de cada habitación lo define el hotel al registrarla; la categoría no fija un precio, solo la clasifica.
 
 ## Instalación
 
