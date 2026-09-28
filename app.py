@@ -78,5 +78,27 @@ def registrar_cliente():
     return render_template("registrar_cliente.html")
 
 
+@app.route("/buscar")
+def buscar():
+    entrada = parsear_fecha(request.args.get("entrada", ""))
+    salida = parsear_fecha(request.args.get("salida", ""))
+    ubicacion = request.args.get("ubicacion", "")
+    calificacion = int(request.args.get("calificacion") or 0)
+    precio = int(request.args.get("precio") or 0)
+    categoria = request.args.get("categoria", "")
+    resultados = None
+    if request.args:
+        if entrada and not salida:
+            flash("Si eliges fecha de entrada, también debes elegir fecha de salida", "error")
+        elif entrada and salida and salida <= entrada:
+            flash("La salida debe ser posterior a la entrada", "error")
+        else:
+            resultados = sistema.buscar_habitaciones(entrada, salida, ubicacion, calificacion, precio, categoria)
+    return render_template(
+        "buscar.html", resultados=resultados, categorias=CATEGORIAS,
+        fecha_ref=entrada or date.today(), sistema=sistema, valores=request.args,
+    )
+
+
 if __name__ == "__main__":
     app.run(debug=True)
