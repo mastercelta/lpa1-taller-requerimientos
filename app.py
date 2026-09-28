@@ -278,3 +278,22 @@ def reservar(sistema):
         console.print("[green]Reserva confirmada[/green]")
     else:
         console.print("[yellow]Pago no confirmado, no se hizo la reserva[/yellow]")
+
+
+def calificar(sistema):
+    numero = elegir("Cliente", [c.nombre for c in sistema.clientes])
+    if numero is None:
+        return
+    cliente = sistema.clientes[numero]
+    hoy = date.today()
+    pendientes = [r for r in sistema.reservas if r.cliente is cliente and r.fecha_salida <= hoy and not r.calificada]  # R18: solo estancias ya terminadas
+    if not pendientes:
+        console.print("[yellow]No tienes estancias terminadas para calificar[/yellow]")
+        return
+    numero = elegir("Estancia a calificar", [f"{r.habitacion.hotel.nombre} - {r.habitacion.tipo} ({r.fecha_entrada} a {r.fecha_salida})" for r in pendientes])
+    reserva = pendientes[numero]
+    puntuacion = IntPrompt.ask("Puntuación", choices=["1", "2", "3", "4", "5"])
+    comentario = pedir("Comentario")
+    reserva.habitacion.calificaciones.append(Calificacion(cliente, puntuacion, comentario))  # R18: calificación y comentario
+    reserva.calificada = True
+    console.print("[green]Gracias por tu calificación[/green]")
