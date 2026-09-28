@@ -297,3 +297,44 @@ def calificar(sistema):
     reserva.habitacion.calificaciones.append(Calificacion(cliente, puntuacion, comentario))  # R18: calificación y comentario
     reserva.calificada = True
     console.print("[green]Gracias por tu calificación[/green]")
+
+
+def cargar_datos_iniciales(sistema):
+    sol = Hotel("Hotel Sol Caribe", "Calle 1 # 2-3", "3001112222", "sol@hotel.com", "Cartagena", "restaurante, piscina")
+    sol.agregar_habitacion(Habitacion("Sencilla", "Cama sencilla con vista al mar", 120000, "wifi, desayuno", 1))
+    sol.agregar_habitacion(Habitacion("Doble", "Dos camas dobles", 200000, "wifi, desayuno, aire acondicionado", 4))
+    andino = Hotel("Hotel Andino", "Carrera 4 # 5-6", "3003334444", "andino@hotel.com", "Medellín", "gimnasio, coworking")
+    andino.agregar_habitacion(Habitacion("Suite", "Suite con sala privada", 350000, "wifi, minibar, jacuzzi", 3))
+    sistema.hoteles.extend([sol, andino])
+    ana = Cliente("Ana Pérez", "3005556666", "ana@correo.com", "Calle 7 # 8-9")
+    sistema.clientes.append(ana)
+    sistema.reservar(ana, sol.habitaciones[0], date(2026, 1, 10), date(2026, 1, 12), 1)
+
+
+def main():
+    sistema = SistemaReservas()
+    cargar_datos_iniciales(sistema)
+    opciones = {
+        "1": ("Registrar hotel", registrar_hotel),
+        "2": ("Registrar habitación", registrar_habitacion),
+        "3": ("Registrar cliente", registrar_cliente),
+        "4": ("Ver hoteles y habitaciones", ver_hoteles),
+        "5": ("Activar o desactivar un hotel", cambiar_estado_hotel),
+        "6": ("Activar o desactivar una habitación", cambiar_estado_habitacion),
+        "7": ("Buscar habitaciones", buscar),
+        "8": ("Reservar", reservar),
+        "9": ("Calificar una estancia", calificar),
+    }
+    while True:
+        console.print("\n[bold]Sistema de reservas[/bold]")
+        for clave, (texto, _) in opciones.items():
+            console.print(f"{clave}. {texto}")
+        console.print("0. Salir")
+        opcion = Prompt.ask("Opción", choices=[*opciones, "0"])
+        if opcion == "0":
+            break
+        opciones[opcion][1](sistema)
+
+
+if __name__ == "__main__":
+    main()
