@@ -36,12 +36,14 @@ class Reserva:
 
 
 class Habitacion:
-    def __init__(self, tipo, descripcion, precio, servicios, capacidad):  # R6: datos de la habitación
+    def __init__(self, tipo, descripcion, precio, servicios, capacidad, fotos="", recargo_por_persona=0):  # R6: datos de la habitación, R2: fotos
         self.tipo = tipo
         self.descripcion = descripcion
         self.precio = precio
         self.servicios = servicios
         self.capacidad = capacidad
+        self.fotos = fotos
+        self.recargo_por_persona = recargo_por_persona
         self.activa = True  # R7: estado de la habitación
         self.hotel = None
         self.reservas = []
@@ -49,12 +51,19 @@ class Habitacion:
 
     def esta_disponible(self, fecha_entrada, fecha_salida):
         for reserva in self.reservas:  # R12: calendario de fechas reservadas
-            if fecha_entrada < reserva.fecha_salida and fecha_salida > reserva.fecha_entrada:
+            if reserva.estado == "confirmada" and fecha_entrada < reserva.fecha_salida and fecha_salida > reserva.fecha_entrada:
                 return False
         return True
 
-    def calcular_total(self, fecha_entrada, fecha_salida):
-        return (fecha_salida - fecha_entrada).days * self.precio
+    def calcular_precio_por_noche(self, personas, fecha, sistema):
+        precio = self.precio + max(0, personas - 1) * self.recargo_por_persona  # R9: recargo por persona adicional
+        ajuste = self.hotel.obtener_ajuste_temporada(fecha, sistema)  # R10, R11: ajuste según temporada
+        return round(precio * (1 + ajuste / 100))
+
+    def calcular_total(self, fecha_entrada, fecha_salida, personas, sistema):
+        # La temporada se calcula con la fecha de entrada y se aplica a toda la estancia
+        noches = (fecha_salida - fecha_entrada).days
+        return self.calcular_precio_por_noche(personas, fecha_entrada, sistema) * noches
 
     def calificacion_promedio(self):
         if not self.calificaciones:
