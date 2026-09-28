@@ -33,6 +33,9 @@ Revisar la documentación en [`./docs`](./docs)
 - **R10**: El sistema debe calcular el precio de una habitación según la temporada.
 - **R11**: El sistema debe manejar un calendario de temporadas propio de cada hotel y un calendario regional de temporadas que la mayoría de los hoteles sigue.
 - **R12**: El sistema debe manejar un calendario por habitación que indique las fechas en que está reservada y las fechas en que está disponible.
+- **R13**: El sistema debe registrar clientes con su nombre completo, número de teléfono, correo electrónico y dirección.
+- **R14**: El sistema debe permitir buscar habitaciones por fecha, ubicación, calificación o precio, y combinar varios criterios.
+- **R15**: El sistema debe mostrar el detalle de una habitación: descripción, características, servicios incluidos, fotos, calificación y comentarios de otros huéspedes.
 
 ### Diseño
 
