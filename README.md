@@ -26,6 +26,9 @@ Revisar la documentación en [`./docs`](./docs)
 - **R3**: El sistema debe permitir registrar las ofertas y promociones por temporada de un hotel (como descuentos en temporada baja o paquetes especiales) y sus servicios adicionales (como estacionamiento o áreas de coworking).
 - **R4**: El sistema debe permitir registrar las condiciones de pago y la política de cancelación de cada hotel, que pueden variar según el tipo de habitación y la temporada.
 - **R5**: El sistema debe manejar el estado de actividad de un hotel (activo o inactivo, por ejemplo cerrado por reformas).
+- **R6**: El sistema debe registrar las habitaciones de un hotel con su tipo, descripción, precio, servicios incluidos, capacidad y fotos.
+- **R7**: El sistema debe manejar el estado de actividad de una habitación (activa o inactiva por mantenimiento, remodelación o desinfección).
+- **R8**: El sistema debe considerar para las reservas únicamente los hoteles y las habitaciones activos.
 
 ### Diseño
 
