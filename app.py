@@ -216,6 +216,11 @@ def registrar_hotel(sistema):
         pedir("Correo electrónico"),
         pedir("Ubicación (ciudad o zona)"),
         pedir("Servicios (ej: restaurante, piscina, gimnasio)"),
+        Prompt.ask("Fotos (nombres de archivo separados por coma, opcional)", default="", show_default=False),
+        Prompt.ask("Servicios adicionales (ej: estacionamiento, coworking, opcional)", default="", show_default=False),
+        pedir("Condición de pago (ej: anticipado, al llegar)"),
+        IntPrompt.ask("Días de anticipación para cancelar sin penalidad"),
+        IntPrompt.ask("Penalidad por cancelación tardía (%)"),
     )
     sistema.hoteles.append(hotel)  # R1: registro del hotel
     console.print("[green]Hotel registrado[/green]")
@@ -231,6 +236,8 @@ def registrar_habitacion(sistema):
         IntPrompt.ask("Precio por noche"),
         pedir("Servicios incluidos"),
         IntPrompt.ask("Capacidad máxima (personas)"),
+        Prompt.ask("Fotos (nombres de archivo separados por coma, opcional)", default="", show_default=False),
+        IntPrompt.ask("Recargo por persona adicional (0 si no aplica)", default=0),
     )
     sistema.hoteles[numero].agregar_habitacion(habitacion)  # R6: registro de la habitación
     console.print("[green]Habitación registrada[/green]")
