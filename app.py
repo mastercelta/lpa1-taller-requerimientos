@@ -25,14 +25,15 @@ class Cliente:
 
 
 class Reserva:
-    def __init__(self, cliente, habitacion, fecha_entrada, fecha_salida, personas):
+    def __init__(self, cliente, habitacion, fecha_entrada, fecha_salida, personas, total):
         self.cliente = cliente
         self.habitacion = habitacion
         self.fecha_entrada = fecha_entrada
         self.fecha_salida = fecha_salida
         self.personas = personas
-        self.total = habitacion.calcular_total(fecha_entrada, fecha_salida)
+        self.total = total
         self.calificada = False
+        self.estado = "confirmada"  # R17: una reserva puede cancelarse
 
 
 class Habitacion:
@@ -122,6 +123,7 @@ class SistemaReservas:
         self.hoteles = []
         self.clientes = []
         self.reservas = []
+        self.calendario_regional = []  # R11: calendario regional de temporadas
 
     def buscar_habitaciones(self, fecha_entrada=None, fecha_salida=None, ubicacion="", calificacion_minima=0, precio_maximo=0):
         resultados = []
@@ -144,10 +146,16 @@ class SistemaReservas:
         return resultados
 
     def reservar(self, cliente, habitacion, fecha_entrada, fecha_salida, personas):
-        reserva = Reserva(cliente, habitacion, fecha_entrada, fecha_salida, personas)
+        total = habitacion.calcular_total(fecha_entrada, fecha_salida, personas, self)
+        reserva = Reserva(cliente, habitacion, fecha_entrada, fecha_salida, personas, total)
         habitacion.reservas.append(reserva)
         self.reservas.append(reserva)
         return reserva
+
+    def cancelar(self, reserva, fecha_cancelacion):
+        reembolso = reserva.habitacion.hotel.calcular_reembolso(reserva.total, reserva.fecha_entrada, fecha_cancelacion)  # R17
+        reserva.estado = "cancelada"
+        return reembolso
 
 
 def pedir(mensaje):
