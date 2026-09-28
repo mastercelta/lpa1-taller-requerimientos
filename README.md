@@ -36,6 +36,10 @@ Revisar la documentación en [`./docs`](./docs)
 - **R13**: El sistema debe registrar clientes con su nombre completo, número de teléfono, correo electrónico y dirección.
 - **R14**: El sistema debe permitir buscar habitaciones por fecha, ubicación, calificación o precio, y combinar varios criterios.
 - **R15**: El sistema debe mostrar el detalle de una habitación: descripción, características, servicios incluidos, fotos, calificación y comentarios de otros huéspedes.
+- **R16**: El sistema debe permitir al cliente confirmar la habitación seleccionada y realizar el pago; la reserva queda formalizada cuando se confirma el pago.
+- **R17**: El sistema debe permitir cancelar una reserva y calcular el reembolso según la política de cancelación del hotel (penalidad o reembolso completo según la anticipación).
+- **R18**: El sistema debe permitir al cliente, después de su estancia, calificar y comentar la habitación.
+- **R19**: El sistema debe calcular la calificación promedio de cada habitación y la calificación general de cada hotel.
 
 ### Diseño
 
