@@ -455,15 +455,15 @@ def cargar_datos_iniciales(sistema):
         "Hotel Sol Caribe", "Calle 1 # 2-3", "3001112222", "sol@hotel.com", "Cartagena", "restaurante, piscina",
         "fachada.jpg, piscina.jpg", "estacionamiento", "50% anticipado, 50% al llegar", 3, 30,
     )
-    sol.agregar_habitacion(Habitacion("Sencilla", "Cama sencilla con vista al mar", 120000, "wifi, desayuno", 1, "sencilla.jpg"))
-    sol.agregar_habitacion(Habitacion("Doble", "Dos camas dobles", 200000, "wifi, desayuno, aire acondicionado", 4, "doble.jpg", 30000))
+    sol.agregar_habitacion(Habitacion("Sencilla", "Cama sencilla con vista al mar", 120000, "wifi, desayuno", 1, "sencilla.jpg", 0, "silver"))
+    sol.agregar_habitacion(Habitacion("Doble", "Dos camas dobles", 200000, "wifi, desayuno, aire acondicionado", 4, "doble.jpg", 30000, "gold"))
     sol.ofertas.append("20% de descuento en temporada baja")
     sol.calendario_temporadas.append({"nombre": "temporada alta", "inicio": date(2026, 12, 15), "fin": date(2027, 1, 15), "ajuste": 25})
     andino = Hotel(
         "Hotel Andino", "Carrera 4 # 5-6", "3003334444", "andino@hotel.com", "Medellín", "gimnasio, coworking",
         "", "coworking", "pago al llegar", 1, 50,
     )
-    andino.agregar_habitacion(Habitacion("Suite", "Suite con sala privada", 350000, "wifi, minibar, jacuzzi", 3, "", 40000))
+    andino.agregar_habitacion(Habitacion("Suite", "Suite con sala privada", 350000, "wifi, minibar, jacuzzi", 3, "", 40000, "platinum"))
     sistema.hoteles.extend([sol, andino])
     sistema.calendario_regional.append({"nombre": "vacaciones de fin de año", "inicio": date(2026, 12, 20), "fin": date(2027, 1, 10), "ajuste": 15})
     ana = Cliente("Ana Pérez", "3005556666", "ana@correo.com", "Calle 7 # 8-9")
@@ -488,6 +488,7 @@ def main():
         "11": ("Agregar temporada a un hotel", agregar_temporada_hotel),
         "12": ("Agregar temporada regional", agregar_temporada_regional),
         "13": ("Cancelar una reserva", cancelar_reserva),
+        "14": ("Ver ofertas y temporadas", ver_ofertas_y_temporadas),
     }
     while True:
         console.print("\n[bold]Sistema de reservas[/bold]")
