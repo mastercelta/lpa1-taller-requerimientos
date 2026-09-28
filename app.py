@@ -33,3 +33,30 @@ class Reserva:
         self.personas = personas
         self.total = habitacion.calcular_total(fecha_entrada, fecha_salida)
         self.calificada = False
+
+
+class Habitacion:
+    def __init__(self, tipo, descripcion, precio, servicios, capacidad):  # R6: datos de la habitación
+        self.tipo = tipo
+        self.descripcion = descripcion
+        self.precio = precio
+        self.servicios = servicios
+        self.capacidad = capacidad
+        self.activa = True  # R7: estado de la habitación
+        self.hotel = None
+        self.reservas = []
+        self.calificaciones = []
+
+    def esta_disponible(self, fecha_entrada, fecha_salida):
+        for reserva in self.reservas:  # R12: calendario de fechas reservadas
+            if fecha_entrada < reserva.fecha_salida and fecha_salida > reserva.fecha_entrada:
+                return False
+        return True
+
+    def calcular_total(self, fecha_entrada, fecha_salida):
+        return (fecha_salida - fecha_entrada).days * self.precio
+
+    def calificacion_promedio(self):
+        if not self.calificaciones:
+            return None
+        return sum(c.puntuacion for c in self.calificaciones) / len(self.calificaciones)  # R19: promedio de la habitación
