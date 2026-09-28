@@ -299,6 +299,37 @@ def cambiar_estado_habitacion(sistema):
     console.print(f"{habitacion.tipo} ahora está {'activa' if habitacion.activa else 'inactiva'}")
 
 
+def agregar_oferta(sistema):
+    numero = elegir("Hotel", [h.nombre for h in sistema.hoteles])
+    if numero is None:
+        return
+    hotel = sistema.hoteles[numero]
+    hotel.ofertas.append(pedir("Descripción de la oferta (ej: 20% de descuento en temporada baja)"))  # R3
+    console.print("[green]Oferta agregada[/green]")
+
+
+def agregar_temporada_hotel(sistema):
+    numero = elegir("Hotel", [h.nombre for h in sistema.hoteles])
+    if numero is None:
+        return
+    hotel = sistema.hoteles[numero]
+    nombre = pedir("Nombre de la temporada (ej: temporada alta)")
+    inicio = pedir_fecha("Fecha de inicio")
+    fin = pedir_fecha("Fecha de fin")
+    ajuste = IntPrompt.ask("Ajuste sobre el precio, en % (positivo sube, negativo baja)")
+    hotel.calendario_temporadas.append({"nombre": nombre, "inicio": inicio, "fin": fin, "ajuste": ajuste})  # R11: calendario propio
+    console.print("[green]Temporada agregada al hotel[/green]")
+
+
+def agregar_temporada_regional(sistema):
+    nombre = pedir("Nombre de la temporada (ej: vacaciones de mitad de año)")
+    inicio = pedir_fecha("Fecha de inicio")
+    fin = pedir_fecha("Fecha de fin")
+    ajuste = IntPrompt.ask("Ajuste sobre el precio, en % (positivo sube, negativo baja)")
+    sistema.calendario_regional.append({"nombre": nombre, "inicio": inicio, "fin": fin, "ajuste": ajuste})  # R11: calendario regional
+    console.print("[green]Temporada regional agregada[/green]")
+
+
 def buscar(sistema):
     entrada = pedir_fecha("Fecha de entrada", opcional=True)
     salida = None
