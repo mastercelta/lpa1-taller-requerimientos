@@ -4,7 +4,7 @@ from rich.console import Console
 from rich.prompt import Confirm, IntPrompt, Prompt
 from rich.table import Table
 
-# No implementados: R3, R4, R10, R11, R17. Las fotos de R2, R6 y R15 no se manejan en consola.
+# Simplificación: la temporada de una reserva se calcula con la fecha de entrada y se aplica a toda la estancia.
 
 console = Console()
 
@@ -400,7 +400,7 @@ def calificar(sistema):
         return
     cliente = sistema.clientes[numero]
     hoy = date.today()
-    pendientes = [r for r in sistema.reservas if r.cliente is cliente and r.fecha_salida <= hoy and not r.calificada]  # R18: solo estancias ya terminadas
+    pendientes = [r for r in sistema.reservas if r.cliente is cliente and r.estado == "confirmada" and r.fecha_salida <= hoy and not r.calificada]  # R18: solo estancias ya terminadas
     if not pendientes:
         console.print("[yellow]No tienes estancias terminadas para calificar[/yellow]")
         return
@@ -414,12 +414,21 @@ def calificar(sistema):
 
 
 def cargar_datos_iniciales(sistema):
-    sol = Hotel("Hotel Sol Caribe", "Calle 1 # 2-3", "3001112222", "sol@hotel.com", "Cartagena", "restaurante, piscina")
-    sol.agregar_habitacion(Habitacion("Sencilla", "Cama sencilla con vista al mar", 120000, "wifi, desayuno", 1))
-    sol.agregar_habitacion(Habitacion("Doble", "Dos camas dobles", 200000, "wifi, desayuno, aire acondicionado", 4))
-    andino = Hotel("Hotel Andino", "Carrera 4 # 5-6", "3003334444", "andino@hotel.com", "Medellín", "gimnasio, coworking")
-    andino.agregar_habitacion(Habitacion("Suite", "Suite con sala privada", 350000, "wifi, minibar, jacuzzi", 3))
+    sol = Hotel(
+        "Hotel Sol Caribe", "Calle 1 # 2-3", "3001112222", "sol@hotel.com", "Cartagena", "restaurante, piscina",
+        "fachada.jpg, piscina.jpg", "estacionamiento", "50% anticipado, 50% al llegar", 3, 30,
+    )
+    sol.agregar_habitacion(Habitacion("Sencilla", "Cama sencilla con vista al mar", 120000, "wifi, desayuno", 1, "sencilla.jpg"))
+    sol.agregar_habitacion(Habitacion("Doble", "Dos camas dobles", 200000, "wifi, desayuno, aire acondicionado", 4, "doble.jpg", 30000))
+    sol.ofertas.append("20% de descuento en temporada baja")
+    sol.calendario_temporadas.append({"nombre": "temporada alta", "inicio": date(2026, 12, 15), "fin": date(2027, 1, 15), "ajuste": 25})
+    andino = Hotel(
+        "Hotel Andino", "Carrera 4 # 5-6", "3003334444", "andino@hotel.com", "Medellín", "gimnasio, coworking",
+        "", "coworking", "pago al llegar", 1, 50,
+    )
+    andino.agregar_habitacion(Habitacion("Suite", "Suite con sala privada", 350000, "wifi, minibar, jacuzzi", 3, "", 40000))
     sistema.hoteles.extend([sol, andino])
+    sistema.calendario_regional.append({"nombre": "vacaciones de fin de año", "inicio": date(2026, 12, 20), "fin": date(2027, 1, 10), "ajuste": 15})
     ana = Cliente("Ana Pérez", "3005556666", "ana@correo.com", "Calle 7 # 8-9")
     sistema.clientes.append(ana)
     sistema.reservar(ana, sol.habitaciones[0], date(2026, 1, 10), date(2026, 1, 12), 1)
@@ -438,6 +447,10 @@ def main():
         "7": ("Buscar habitaciones", buscar),
         "8": ("Reservar", reservar),
         "9": ("Calificar una estancia", calificar),
+        "10": ("Agregar oferta a un hotel", agregar_oferta),
+        "11": ("Agregar temporada a un hotel", agregar_temporada_hotel),
+        "12": ("Agregar temporada regional", agregar_temporada_regional),
+        "13": ("Cancelar una reserva", cancelar_reserva),
     }
     while True:
         console.print("\n[bold]Sistema de reservas[/bold]")
