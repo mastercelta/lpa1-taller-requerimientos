@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Buscar habitaciones</h1>
+<form method="get">
+    <label>Fecha de entrada (opcional)</label>
+    <input type="date" name="entrada" value="{{ valores.get('entrada', '') }}">
+    <label>Fecha de salida (obligatoria si pones entrada)</label>
+    <input type="date" name="salida" value="{{ valores.get('salida', '') }}">
+    <label>Ubicación (opcional)</label>
+    <input type="text" name="ubicacion" value="{{ valores.get('ubicacion', '') }}">
+    <label>Calificación mínima (1 a 5, opcional)</label>
+    <input type="number" name="calificacion" min="0" max="5" value="{{ valores.get('calificacion', '') }}">
+    <label>Precio máximo por noche (opcional)</label>
+    <input type="number" name="precio" min="0" value="{{ valores.get('precio', '') }}">
+    <label>Categoría (opcional)</label>
+    <select name="categoria">
+        <option value="">Cualquiera</option>
+        {% for c in categorias %}
+        <option value="{{ c }}" {{ "selected" if valores.get('categoria') == c else "" }}>{{ c }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Buscar</button>
+</form>
+
+{% if resultados is not none %}
+<h2>Resultados</h2>
+{% if resultados %}
+<table>
+    <tr><th>Hotel</th><th>Ubicación</th><th>Tipo</th><th>Categoría</th><th>Precio/noche</th><th>Capacidad</th><th>Calificación</th><th></th></tr>
+    {% for h in resultados %}
+    <tr>
+        <td>{{ h.hotel.nombre }}</td>
+        <td>{{ h.hotel.ubicacion }}</td>
+        <td>{{ h.tipo }}</td>
+        <td>{{ h.categoria }}</td>
+        <td>${{ h.calcular_precio_por_noche(1, fecha_ref, sistema) }}</td>
+        <td>{{ h.capacidad }}</td>
+        <td>{{ "%.1f"|format(h.calificacion_promedio()) if h.calificacion_promedio() is not none else "Sin calificar" }}</td>
+        <td><a href="{{ url_for('reservar') }}">Reservar</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No se encontraron habitaciones con esos criterios.</p>
+{% endif %}
+{% endif %}
+{% endblock %}
