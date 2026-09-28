@@ -82,3 +82,36 @@ class Hotel:
         if not puntuaciones:
             return None
         return sum(puntuaciones) / len(puntuaciones)  # R19: calificación general del hotel
+
+
+class SistemaReservas:
+    def __init__(self):
+        self.hoteles = []
+        self.clientes = []
+        self.reservas = []
+
+    def buscar_habitaciones(self, fecha_entrada=None, fecha_salida=None, ubicacion="", calificacion_minima=0, precio_maximo=0):
+        resultados = []
+        for hotel in self.hoteles:
+            if not hotel.activo:  # R8: solo hoteles activos
+                continue
+            if ubicacion and ubicacion.lower() not in hotel.ubicacion.lower():  # R14: criterio de ubicación
+                continue
+            for habitacion in hotel.habitaciones:
+                if not habitacion.activa:  # R8: solo habitaciones activas
+                    continue
+                if fecha_entrada and not habitacion.esta_disponible(fecha_entrada, fecha_salida):  # R14: criterio de fecha
+                    continue
+                promedio = habitacion.calificacion_promedio()
+                if calificacion_minima and (promedio is None or promedio < calificacion_minima):  # R14: criterio de calificación
+                    continue
+                if precio_maximo and habitacion.precio > precio_maximo:  # R14: criterio de precio
+                    continue
+                resultados.append(habitacion)
+        return resultados
+
+    def reservar(self, cliente, habitacion, fecha_entrada, fecha_salida, personas):
+        reserva = Reserva(cliente, habitacion, fecha_entrada, fecha_salida, personas)
+        habitacion.reservas.append(reserva)
+        self.reservas.append(reserva)
+        return reserva
