@@ -350,7 +350,8 @@ def buscar(sistema):
     ubicacion = Prompt.ask("Ubicación (vacío para omitir)", default="", show_default=False)
     calificacion = IntPrompt.ask("Calificación mínima de 1 a 5 (0 para omitir)", default=0)
     precio = IntPrompt.ask("Precio máximo por noche (0 para omitir)", default=0)
-    resultados = sistema.buscar_habitaciones(entrada, salida, ubicacion, calificacion, precio)
+    categoria = Prompt.ask("Categoría (silver, gold, platinum; vacío para omitir)", default="", show_default=False)
+    resultados = sistema.buscar_habitaciones(entrada, salida, ubicacion, calificacion, precio, categoria)
     if not resultados:
         console.print("[yellow]No se encontraron habitaciones[/yellow]")
         return
