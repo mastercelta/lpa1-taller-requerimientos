@@ -339,6 +339,33 @@ def agregar_temporada_regional(sistema):
     console.print("[green]Temporada regional agregada[/green]")
 
 
+def ver_ofertas_y_temporadas(sistema):
+    if sistema.calendario_regional:
+        tabla = Table(title="Temporadas regionales")
+        for columna in ["Temporada", "Inicio", "Fin", "Ajuste"]:
+            tabla.add_column(columna)
+        for t in sistema.calendario_regional:
+            tabla.add_row(t["nombre"], str(t["inicio"]), str(t["fin"]), f"{t['ajuste']}%")
+        console.print(tabla)
+    else:
+        console.print("[yellow]No hay temporadas regionales registradas[/yellow]")
+
+    for hotel in sistema.hoteles:
+        if not hotel.ofertas and not hotel.calendario_temporadas:
+            continue
+        console.print(f"\n[bold]{hotel.nombre}[/bold]")
+        if hotel.ofertas:
+            for oferta in hotel.ofertas:
+                console.print(f"  Oferta: {oferta}")
+        if hotel.calendario_temporadas:
+            tabla = Table(title=f"Temporadas de {hotel.nombre}")
+            for columna in ["Temporada", "Inicio", "Fin", "Ajuste"]:
+                tabla.add_column(columna)
+            for t in hotel.calendario_temporadas:
+                tabla.add_row(t["nombre"], str(t["inicio"]), str(t["fin"]), f"{t['ajuste']}%")
+            console.print(tabla)
+
+
 def buscar(sistema):
     entrada = pedir_fecha("Fecha de entrada", opcional=True)
     salida = None
