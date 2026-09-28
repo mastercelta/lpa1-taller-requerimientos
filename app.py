@@ -126,7 +126,7 @@ class SistemaReservas:
         self.reservas = []
         self.calendario_regional = []  # R11: calendario regional de temporadas
 
-    def buscar_habitaciones(self, fecha_entrada=None, fecha_salida=None, ubicacion="", calificacion_minima=0, precio_maximo=0):
+    def buscar_habitaciones(self, fecha_entrada=None, fecha_salida=None, ubicacion="", calificacion_minima=0, precio_maximo=0, categoria=""):
         resultados = []
         for hotel in self.hoteles:
             if not hotel.activo:  # R8: solo hoteles activos
@@ -142,6 +142,8 @@ class SistemaReservas:
                 if calificacion_minima and (promedio is None or promedio < calificacion_minima):  # R14: criterio de calificación
                     continue
                 if precio_maximo and habitacion.precio > precio_maximo:  # R14: criterio de precio
+                    continue
+                if categoria and habitacion.categoria != categoria:  # criterio de categoría (silver, gold, platinum)
                     continue
                 resultados.append(habitacion)
         return resultados
