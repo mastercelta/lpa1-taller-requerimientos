@@ -58,12 +58,12 @@ TODO: Crear el diagrama de clases:
 
 ## Instalación
 
-TODO: Corregir la explicación de la instalación - Morbi quam lectus, tempus sit amet mi non, facilisis dignissim erat. Aenean tortor libero, rhoncus eu eleifend ut, volutpat id nisi. Ut porta eros at ante rutrum pharetra. Integer nec nulla dictum, vestibulum ligula id, hendrerit ex. Morbi eget tortor metus.
+El proyecto requiere Python 3 y usa la librería `rich` para mostrar la interfaz en la consola. Se recomienda instalarlo dentro de un entorno virtual para no mezclar sus dependencias con las de otros proyectos. En Windows el entorno virtual se activa con `venv\Scripts\activate`.
 
 1. Clonar el proyecto
 
     ```bash
-    git clone https://github.com/clubdecomputacion/lpa1-taller-requerimientos.git
+    git clone https://github.com/mastercelta/lpa1-taller-requerimientos.git
     ```
 
 2. Crear y activar entorno virtual
@@ -82,7 +82,7 @@ TODO: Corregir la explicación de la instalación - Morbi quam lectus, tempus si
     
 ## Ejecución
 
-TODO: Corregir la explicación de la ejecución - Maecenas sed lorem at arcu varius mollis. Sed eleifend nulla ut blandit interdum. Donec sollicitudin nunc at orci facilisis dignissim. Donec at arcu luctus, commodo magna eget, blandit leo.
+Con el entorno virtual activado y las dependencias instaladas, el sistema se inicia ejecutando `app.py` desde la raíz del proyecto.
 
 1. Ejecutar el proyecto
 
