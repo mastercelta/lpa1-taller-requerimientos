@@ -36,7 +36,7 @@
         <td>${{ h.calcular_precio_por_noche(1, fecha_ref, sistema) }}</td>
         <td>{{ h.capacidad }}</td>
         <td>{{ "%.1f"|format(h.calificacion_promedio()) if h.calificacion_promedio() is not none else "Sin calificar" }}</td>
-        <td><a href="{{ url_for('reservar') }}">Reservar</a></td>
+        <td><a href="{{ url_for('detalle_habitacion', indice_hotel=sistema.hoteles.index(h.hotel), indice_hab=h.hotel.habitaciones.index(h)) }}">Ver detalle</a> | <a href="{{ url_for('reservar') }}">Reservar</a></td>
     </tr>
     {% endfor %}
 </table>
