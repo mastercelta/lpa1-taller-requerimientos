@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Reservar</h1>
+{% if clientes %}
+<form method="post">
+    <input type="hidden" name="paso" value="buscar">
+    <label>Cliente</label>
+    <select name="cliente" required>
+        {% for c in clientes %}
+        <option value="{{ loop.index0 }}" {{ "selected" if cliente_idx == loop.index0|string else "" }}>{{ c.nombre }}</option>
+        {% endfor %}
+    </select>
+    <label>Fecha de entrada</label>
+    <input type="date" name="entrada" value="{{ entrada or '' }}" required>
+    <label>Fecha de salida</label>
+    <input type="date" name="salida" value="{{ salida or '' }}" required>
+    <label>Cantidad de personas</label>
+    <input type="number" name="personas" min="1" value="{{ personas or 1 }}" required>
+    <button type="submit">Ver habitaciones disponibles</button>
+</form>
+
+{% if disponibles is not none %}
+<h2>Habitaciones disponibles</h2>
+{% if disponibles %}
+<table>
+    <tr><th>Hotel</th><th>Tipo</th><th>Categoría</th><th>Precio/noche</th><th>Total</th><th></th></tr>
+    {% for h in disponibles %}
+    <tr>
+        <td>{{ h.hotel.nombre }}</td>
+        <td>{{ h.tipo }}</td>
+        <td>{{ h.categoria }}</td>
+        <td>${{ h.calcular_precio_por_noche(personas, entrada, sistema) }}</td>
+        <td>${{ h.calcular_total(entrada, salida, personas, sistema) }}</td>
+        <td>
+            <form method="post" class="inline-form">
+                <input type="hidden" name="paso" value="confirmar">
+                <input type="hidden" name="cliente" value="{{ cliente_idx }}">
+                <input type="hidden" name="entrada" value="{{ entrada }}">
+                <input type="hidden" name="salida" value="{{ salida }}">
+                <input type="hidden" name="personas" value="{{ personas }}">
+                <input type="hidden" name="habitacion" value="{{ sistema.hoteles.index(h.hotel) }}:{{ h.hotel.habitaciones.index(h) }}">
+                <button type="submit">Confirmar y pagar</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
+{% else %}
+<p>Primero debes <a href="{{ url_for('registrar_cliente') }}">registrar un cliente</a>.</p>
+{% endif %}
+{% endblock %}
