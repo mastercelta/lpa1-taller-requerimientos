@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Ofertas y temporadas</h1>
+
+<h2>Temporadas regionales</h2>
+<table>
+    <tr><th>Temporada</th><th>Inicio</th><th>Fin</th><th>Ajuste</th></tr>
+    {% for t in sistema.calendario_regional %}
+    <tr><td>{{ t.nombre }}</td><td>{{ t.inicio }}</td><td>{{ t.fin }}</td><td>{{ t.ajuste }}%</td></tr>
+    {% else %}
+    <tr><td colspan="4">No hay temporadas regionales registradas</td></tr>
+    {% endfor %}
+</table>
+<form method="post" action="{{ url_for('agregar_temporada_regional') }}">
+    <label>Nombre de la temporada</label>
+    <input type="text" name="nombre" required>
+    <label>Fecha de inicio</label>
+    <input type="date" name="inicio" required>
+    <label>Fecha de fin</label>
+    <input type="date" name="fin" required>
+    <label>Ajuste sobre el precio, en % (positivo sube, negativo baja)</label>
+    <input type="number" name="ajuste" required>
+    <button type="submit">Agregar temporada regional</button>
+</form>
+
+{% for hotel in sistema.hoteles %}
+<h2>{{ hotel.nombre }}</h2>
+{% if hotel.ofertas %}
+<ul>{% for o in hotel.ofertas %}<li>{{ o }}</li>{% endfor %}</ul>
+{% else %}
+<p>Sin ofertas registradas</p>
+{% endif %}
+<form method="post" action="{{ url_for('agregar_oferta', indice=loop.index0) }}">
+    <label>Descripción de la oferta</label>
+    <input type="text" name="descripcion" required>
+    <button type="submit">Agregar oferta</button>
+</form>
+
+<table>
+    <tr><th>Temporada</th><th>Inicio</th><th>Fin</th><th>Ajuste</th></tr>
+    {% for t in hotel.calendario_temporadas %}
+    <tr><td>{{ t.nombre }}</td><td>{{ t.inicio }}</td><td>{{ t.fin }}</td><td>{{ t.ajuste }}%</td></tr>
+    {% else %}
+    <tr><td colspan="4">Sin temporadas propias</td></tr>
+    {% endfor %}
+</table>
+<form method="post" action="{{ url_for('agregar_temporada_hotel', indice=loop.index0) }}">
+    <label>Nombre de la temporada</label>
+    <input type="text" name="nombre" required>
+    <label>Fecha de inicio</label>
+    <input type="date" name="inicio" required>
+    <label>Fecha de fin</label>
+    <input type="date" name="fin" required>
+    <label>Ajuste sobre el precio, en % (positivo sube, negativo baja)</label>
+    <input type="number" name="ajuste" required>
+    <button type="submit">Agregar temporada a este hotel</button>
+</form>
+{% endfor %}
+{% endblock %}

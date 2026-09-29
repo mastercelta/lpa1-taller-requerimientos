@@ -158,5 +158,43 @@ def calificar(id_reserva):
     return redirect(url_for("mis_reservas", cliente=reserva.cliente.nombre))
 
 
+@app.route("/ofertas-temporadas")
+def ofertas_temporadas():
+    return render_template("ofertas_temporadas.html", sistema=sistema)
+
+
+@app.route("/hoteles/<int:indice>/ofertas", methods=["POST"])
+def agregar_oferta(indice):
+    hotel = sistema.hoteles[indice]
+    hotel.ofertas.append(request.form["descripcion"])  # R3: ofertas por temporada
+    flash("Oferta agregada", "ok")
+    return redirect(url_for("ofertas_temporadas"))
+
+
+@app.route("/hoteles/<int:indice>/temporadas", methods=["POST"])
+def agregar_temporada_hotel(indice):
+    hotel = sistema.hoteles[indice]
+    hotel.calendario_temporadas.append({
+        "nombre": request.form["nombre"],
+        "inicio": parsear_fecha(request.form["inicio"]),
+        "fin": parsear_fecha(request.form["fin"]),
+        "ajuste": int(request.form["ajuste"]),
+    })  # R11: calendario propio de temporadas
+    flash("Temporada agregada al hotel", "ok")
+    return redirect(url_for("ofertas_temporadas"))
+
+
+@app.route("/temporadas-regionales", methods=["POST"])
+def agregar_temporada_regional():
+    sistema.calendario_regional.append({
+        "nombre": request.form["nombre"],
+        "inicio": parsear_fecha(request.form["inicio"]),
+        "fin": parsear_fecha(request.form["fin"]),
+        "ajuste": int(request.form["ajuste"]),
+    })  # R11: calendario regional de temporadas
+    flash("Temporada regional agregada", "ok")
+    return redirect(url_for("ofertas_temporadas"))
+
+
 if __name__ == "__main__":
     app.run(debug=True)
