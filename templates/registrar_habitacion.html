@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Registrar habitación</h1>
+{% if hoteles %}
+<form method="post">
+    <label>Hotel</label>
+    <select name="hotel" required>
+        {% for hotel in hoteles %}
+        <option value="{{ loop.index0 }}">{{ hotel.nombre }}</option>
+        {% endfor %}
+    </select>
+    <label>Tipo (ej: sencilla, doble, suite)</label>
+    <input type="text" name="tipo" required>
+    <label>Descripción</label>
+    <input type="text" name="descripcion" required>
+    <label>Categoría</label>
+    <select name="categoria" required>
+        {% for c in categorias %}
+        <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+    </select>
+    <label>Precio por noche</label>
+    <input type="number" name="precio" min="0" required>
+    <label>Servicios incluidos</label>
+    <input type="text" name="servicios" required>
+    <label>Capacidad máxima (personas)</label>
+    <input type="number" name="capacidad" min="1" required>
+    <label>Fotos (nombres de archivo separados por coma, opcional)</label>
+    <input type="text" name="fotos">
+    <label>Recargo por persona adicional (0 si no aplica)</label>
+    <input type="number" name="recargo_por_persona" min="0" value="0">
+    <button type="submit">Registrar</button>
+</form>
+{% else %}
+<p>Primero debes <a href="{{ url_for('registrar_hotel') }}">registrar un hotel</a>.</p>
+{% endif %}
+{% endblock %}

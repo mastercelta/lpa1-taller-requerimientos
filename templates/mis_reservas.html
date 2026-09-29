@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Mis reservas</h1>
+<form method="get">
+    <label>Cliente</label>
+    <select name="cliente" onchange="this.form.submit()" required>
+        <option value="">Selecciona un cliente</option>
+        {% for c in clientes %}
+        <option value="{{ c.nombre }}" {{ "selected" if nombre_cliente == c.nombre else "" }}>{{ c.nombre }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Ver</button>
+</form>
+
+{% if nombre_cliente %}
+<table>
+    <tr><th>Hotel</th><th>Habitación</th><th>Entrada</th><th>Salida</th><th>Total</th><th>Estado</th><th></th></tr>
+    {% for r in reservas %}
+    <tr>
+        <td>{{ r.habitacion.hotel.nombre }}</td>
+        <td>{{ r.habitacion.tipo }}</td>
+        <td>{{ r.fecha_entrada }}</td>
+        <td>{{ r.fecha_salida }}</td>
+        <td>${{ r.total }}</td>
+        <td>{{ r.estado }}</td>
+        <td>
+            {% if r.estado == "confirmada" %}
+            <form method="post" action="{{ url_for('cancelar', id_reserva=r.id) }}" class="inline-form">
+                <button type="submit">Cancelar</button>
+            </form>
+            {% if r.fecha_salida <= hoy and not r.calificada %}
+            <form method="post" action="{{ url_for('calificar', id_reserva=r.id) }}" class="inline-form">
+                <select name="puntuacion" required>
+                    {% for n in [1,2,3,4,5] %}<option value="{{ n }}">{{ n }}</option>{% endfor %}
+                </select>
+                <input type="text" name="comentario" placeholder="Comentario" required style="width:140px">
+                <button type="submit">Calificar</button>
+            </form>
+            {% endif %}
+            {% endif %}
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7">Sin reservas</td></tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

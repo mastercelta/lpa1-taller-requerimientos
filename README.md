@@ -11,7 +11,7 @@
 
 ## Descripción del Proyecto
 
-Sistema de consola, desarrollado en Python con la librería `rich`, para gestionar las reservas de hoteles. Permite registrar hoteles y sus habitaciones, registrar clientes, buscar habitaciones, reservarlas mediante un pago y calificarlas después de la estancia.
+Aplicación web, desarrollada en Python con Flask, para gestionar las reservas de hoteles. Permite registrar hoteles y sus habitaciones, registrar clientes, buscar habitaciones, reservarlas mediante un pago y calificarlas después de la estancia.
 
 Los requerimientos salen de la entrevista con la administradora del hotel, disponible en [`docs/entrevista.pdf`](./docs/entrevista.pdf).
 
@@ -60,7 +60,7 @@ El precio de cada habitación lo define el hotel al registrarla; la categoría n
 
 ## Instalación
 
-El proyecto requiere Python 3 y usa la librería `rich` para mostrar la interfaz en la consola. Se recomienda instalarlo dentro de un entorno virtual para no mezclar sus dependencias con las de otros proyectos. En Windows el entorno virtual se activa con `venv\Scripts\activate`.
+El proyecto requiere Python 3 y usa Flask para servir la interfaz web. Se recomienda instalarlo dentro de un entorno virtual para no mezclar sus dependencias con las de otros proyectos. En Windows el entorno virtual se activa con `venv\Scripts\activate`.
 
 1. Clonar el proyecto
 
@@ -84,7 +84,7 @@ El proyecto requiere Python 3 y usa la librería `rich` para mostrar la interfaz
     
 ## Ejecución
 
-Con el entorno virtual activado y las dependencias instaladas, el sistema se inicia ejecutando `app.py` desde la raíz del proyecto.
+Con el entorno virtual activado y las dependencias instaladas, el servidor se inicia ejecutando `app.py` desde la raíz del proyecto. Luego se abre el navegador en http://127.0.0.1:5000
 
 1. Ejecutar el proyecto
 

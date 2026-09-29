@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>{{ h.hotel.nombre }} — {{ h.tipo }} ({{ h.categoria }})</h1>
+<p>Ubicación: {{ h.hotel.ubicacion }}</p>
+<p>Descripción: {{ h.descripcion }}</p>
+<p>Servicios incluidos: {{ h.servicios }}</p>
+<p>Capacidad: {{ h.capacidad }} personas</p>
+<p>Precio base por noche: ${{ h.precio }}</p>
+{% if h.fotos %}<p>Fotos: {{ h.fotos }}</p>{% endif %}
+<p>Calificación promedio: {{ "%.1f"|format(h.calificacion_promedio()) if h.calificacion_promedio() is not none else "Sin calificar" }}</p>
+
+<h2>Comentarios</h2>
+{% if h.calificaciones %}
+<table>
+    <tr><th>Cliente</th><th>Puntuación</th><th>Comentario</th></tr>
+    {% for c in h.calificaciones %}
+    <tr><td>{{ c.cliente.nombre }}</td><td>{{ c.puntuacion }}/5</td><td>{{ c.comentario }}</td></tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Todavía no tiene comentarios.</p>
+{% endif %}
+
+<p><a href="{{ url_for('reservar') }}">Ir a reservar</a></p>
+{% endblock %}
