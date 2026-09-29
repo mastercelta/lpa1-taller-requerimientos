@@ -1,13 +1,13 @@
 # Sistema de Agencia de Viajes
 
-![commits](https://badgen.net/github/commits/clubdecomputacion/lpa1-taller-requerimientos?icon=github) 
-![last_commit](https://img.shields.io/github/last-commit/clubdecomputacion/lpa1-taller-requerimientos)
+![commits](https://badgen.net/github/commits/mastercelta/lpa1-taller-requerimientos?icon=github) 
+![last_commit](https://img.shields.io/github/last-commit/mastercelta/lpa1-taller-requerimientos)
 
 - ver [badgen](https://badgen.net/) o [shields](https://shields.io/) para otros tipos de _badges_
 
 ## Autor
 
-- [@estudiante](https://www.github.com/estudiante)
+- [@mastercelta](https://github.com/mastercelta)
 
 ## Descripción del Proyecto
 
