@@ -100,5 +100,63 @@ def buscar():
     )
 
 
+@app.route("/reservar", methods=["GET", "POST"])
+def reservar():
+    disponibles = None
+    if request.method == "POST" and request.form.get("paso") == "buscar":
+        cliente = sistema.clientes[int(request.form["cliente"])]
+        entrada = parsear_fecha(request.form["entrada"])
+        salida = parsear_fecha(request.form["salida"])
+        personas = int(request.form["personas"])
+        if salida <= entrada:
+            flash("La salida debe ser posterior a la entrada", "error")
+        else:
+            disponibles = [h for h in sistema.buscar_habitaciones(entrada, salida) if h.capacidad >= personas]  # R9: la capacidad no se puede exceder
+            if not disponibles:
+                flash("No hay habitaciones disponibles para esas fechas y personas", "error")
+            return render_template(
+                "reservar.html", clientes=sistema.clientes, disponibles=disponibles, sistema=sistema,
+                cliente_idx=request.form["cliente"], entrada=entrada, salida=salida, personas=personas,
+            )
+    if request.method == "POST" and request.form.get("paso") == "confirmar":
+        cliente = sistema.clientes[int(request.form["cliente"])]
+        entrada = parsear_fecha(request.form["entrada"])
+        salida = parsear_fecha(request.form["salida"])
+        personas = int(request.form["personas"])
+        hotel_idx, hab_idx = request.form["habitacion"].split(":")
+        habitacion = sistema.hoteles[int(hotel_idx)].habitaciones[int(hab_idx)]
+        sistema.reservar(cliente, habitacion, entrada, salida, personas)  # R16: la reserva se formaliza al confirmar el pago
+        flash("Reserva confirmada", "ok")
+        return redirect(url_for("mis_reservas", cliente=cliente.nombre))
+    return render_template("reservar.html", clientes=sistema.clientes, disponibles=None, sistema=sistema)
+
+
+@app.route("/mis-reservas")
+def mis_reservas():
+    nombre_cliente = request.args.get("cliente", "")
+    reservas = [r for r in sistema.reservas if r.cliente.nombre == nombre_cliente] if nombre_cliente else []
+    hoy = date.today()
+    return render_template("mis_reservas.html", clientes=sistema.clientes, nombre_cliente=nombre_cliente, reservas=reservas, hoy=hoy)
+
+
+@app.route("/reservas/<int:id_reserva>/cancelar", methods=["POST"])
+def cancelar(id_reserva):
+    reserva = next(r for r in sistema.reservas if r.id == id_reserva)
+    reembolso = sistema.cancelar(reserva, date.today())  # R17: cancelar y calcular el reembolso
+    flash(f"Reserva cancelada. Reembolso: ${reembolso}", "ok")
+    return redirect(url_for("mis_reservas", cliente=reserva.cliente.nombre))
+
+
+@app.route("/reservas/<int:id_reserva>/calificar", methods=["POST"])
+def calificar(id_reserva):
+    reserva = next(r for r in sistema.reservas if r.id == id_reserva)
+    puntuacion = int(request.form["puntuacion"])
+    comentario = request.form["comentario"]
+    reserva.habitacion.calificaciones.append(Calificacion(reserva.cliente, puntuacion, comentario))  # R18: calificación y comentario
+    reserva.calificada = True
+    flash("Gracias por tu calificación", "ok")
+    return redirect(url_for("mis_reservas", cliente=reserva.cliente.nombre))
+
+
 if __name__ == "__main__":
     app.run(debug=True)
