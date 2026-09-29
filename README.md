@@ -11,7 +11,7 @@
 
 ## Descripción del Proyecto
 
-Aplicación web, desarrollada en Python con Flask, para gestionar las reservas de hoteles. Permite registrar hoteles y sus habitaciones, registrar clientes, buscar habitaciones, reservarlas mediante un pago y calificarlas después de la estancia.
+Sistema para gestionar las reservas de hoteles, desarrollado en Python, disponible en dos versiones: una aplicación web con Flask (`app.py`) y una interfaz de consola con `rich` (`app_consola.py`). Ambas comparten la misma lógica de negocio (`domain.py`) y permiten registrar hoteles y sus habitaciones, registrar clientes, buscar habitaciones, reservarlas mediante un pago y calificarlas después de la estancia.
 
 Los requerimientos salen de la entrevista con la administradora del hotel, disponible en [`docs/entrevista.pdf`](./docs/entrevista.pdf).
 
@@ -60,7 +60,7 @@ El precio de cada habitación lo define el hotel al registrarla; la categoría n
 
 ## Instalación
 
-El proyecto requiere Python 3 y usa Flask para servir la interfaz web. Se recomienda instalarlo dentro de un entorno virtual para no mezclar sus dependencias con las de otros proyectos. En Windows el entorno virtual se activa con `venv\Scripts\activate`.
+El proyecto requiere Python 3 y usa Flask para la interfaz web y `rich` para la interfaz de consola. Se recomienda instalarlo dentro de un entorno virtual para no mezclar sus dependencias con las de otros proyectos. En Windows el entorno virtual se activa con `venv\Scripts\activate`.
 
 1. Clonar el proyecto
 
@@ -84,7 +84,12 @@ El proyecto requiere Python 3 y usa Flask para servir la interfaz web. Se recomi
     
 ## Ejecución
 
-Con el entorno virtual activado y las dependencias instaladas, el servidor se inicia ejecutando `app.py` desde la raíz del proyecto. Luego se abre el navegador en http://127.0.0.1:5000
+Con el entorno virtual activado y las dependencias instaladas, hay dos formas de ejecutar el sistema desde la raíz del proyecto:
+
+- **Versión web:** `python3 app.py`, luego se abre el navegador en http://127.0.0.1:5000
+- **Versión de consola:** `python3 app_consola.py`, y se usa directamente en la terminal
+
+Ambas usan los mismos datos de ejemplo al iniciar, pero cada una mantiene su propia información mientras está corriendo (no comparten estado entre sí).
 
 1. Ejecutar el proyecto
 
