@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Registrar hotel</h1>
+<form method="post">
+    <label>Nombre</label>
+    <input type="text" name="nombre" required>
+    <label>Dirección</label>
+    <input type="text" name="direccion" required>
+    <label>Teléfono</label>
+    <input type="text" name="telefono" required>
+    <label>Correo electrónico</label>
+    <input type="email" name="correo" required>
+    <label>Ubicación (ciudad o zona)</label>
+    <input type="text" name="ubicacion" required>
+    <label>Servicios (ej: restaurante, piscina, gimnasio)</label>
+    <input type="text" name="servicios" required>
+    <label>Fotos (nombres de archivo separados por coma, opcional)</label>
+    <input type="text" name="fotos">
+    <label>Servicios adicionales (ej: estacionamiento, coworking, opcional)</label>
+    <input type="text" name="servicios_adicionales">
+    <label>Condición de pago (ej: anticipado, al llegar)</label>
+    <input type="text" name="condicion_pago" required>
+    <label>Días de anticipación para cancelar sin penalidad</label>
+    <input type="number" name="dias_anticipacion" min="0" required>
+    <label>Penalidad por cancelación tardía (%)</label>
+    <input type="number" name="penalidad_cancelacion" min="0" max="100" required>
+    <button type="submit">Registrar</button>
+</form>
+{% endblock %}
