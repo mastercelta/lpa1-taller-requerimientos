@@ -7,7 +7,7 @@
 
 ## Autor
 
-- [@estudiante](https://www.github.com/estudiante)
+- [@mastercelta](https://github.com/mastercelta)
 
 ## Descripción del Proyecto
 
