@@ -16,7 +16,7 @@
     <tr><th>Tipo</th><th>Categoría</th><th>Precio/noche</th><th>Capacidad</th><th>Estado</th><th>Calificación</th><th></th></tr>
     {% for h in hotel.habitaciones %}
     <tr>
-        <td>{{ h.tipo }}</td>
+        <td>{{ h.tipo }} (<a href="{{ url_for('detalle_habitacion', indice_hotel=indice_hotel, indice_hab=loop.index0) }}">ver</a>)</td>
         <td>{{ h.categoria }}</td>
         <td>${{ h.precio }}</td>
         <td>{{ h.capacidad }}</td>

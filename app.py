@@ -196,5 +196,11 @@ def agregar_temporada_regional():
     return redirect(url_for("ofertas_temporadas"))
 
 
+@app.route("/hoteles/<int:indice_hotel>/habitaciones/<int:indice_hab>")
+def detalle_habitacion(indice_hotel, indice_hab):
+    habitacion = sistema.hoteles[indice_hotel].habitaciones[indice_hab]
+    return render_template("detalle_habitacion.html", h=habitacion)  # R15: detalle con calificación y comentarios
+
+
 if __name__ == "__main__":
     app.run(debug=True)
